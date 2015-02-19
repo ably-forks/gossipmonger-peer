@@ -32,6 +32,8 @@ OTHER DEALINGS IN THE SOFTWARE.
 
 var deepEqual = require('./deepEqual.js');
 
+var states = ['dead', 'live', 'extinct'];
+
 /*
   * `id`: _String_ Id of the peer.
   * `options`: _Object_
@@ -64,7 +66,7 @@ var GossipmongerPeer = module.exports = function GossipmongerPeer (id, options) 
     self.intervals = options.intervals || [750];
     self.intervalsMean = options.intervalsMean;
     self.lastTime = options.lastTime;
-    self.live = (options.live === undefined) ? true : options.live;
+    self.state = (options.live === undefined) ? 1 : Number(options.live);
     self.maxVersionSeen = options.maxVersionSeen || 0;
     self.MAX_INTERVALS = options.MAX_INTERVALS || 100;
     self.sum = options.sum;
@@ -165,13 +167,19 @@ GossipmongerPeer.prototype.markContact = function markContact (time) {
 GossipmongerPeer.prototype.markDead = function markDead () {
     var self = this;
 
-    self.live = false;
+    self.state = 0;
 };
 
 GossipmongerPeer.prototype.markLive = function markLive () {
     var self = this;
 
-    self.live = true;
+    self.state = 1;
+};
+
+GossipmongerPeer.prototype.markExtinct = function markLive () {
+	var self = this;
+
+	self.state = 2;
 };
 
 /*
